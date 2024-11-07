@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prédiction de Température</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("{{url_for('static', filename='images/terre.png')}}");
+            background-size: cover;
+            background-position: center;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .description {
+            text-align: center;
+            font-size: 1.1em;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #3333FF;
+        }
+
+        .month-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .month-input {
+            width: 48%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .month-label {
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+            width: 30%;
+        }
+
+        input {
+            width: 65%;
+            padding: 8px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            margin: 10px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: #007bff;
+        }
+
+        .loading .circle {
+            border: 4px solid #007bff;
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: red;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .month-input {
+                width: 100%; /* Full width on smaller screens */
+            }
+
+            .month-label {
+                width: 40%; /* Adjust label width for smaller screens */
+            }
+
+            input {
+                width: 55%; /* Adjust input field width */
+            }
+
+            button {
+                width: 100%; /* Button takes full width */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em; /* Smaller heading on mobile */
+            }
+
+            .description {
+                font-size: 1em; /* Smaller description on mobile */
+            }
+
+            .month-label {
+                font-size: 0.9em; /* Adjust label font size */
+            }
+
+            input {
+                font-size: 0.9em; /* Adjust input font size */
+            }
+
+            button {
+                font-size: 1em; /* Adjust button font size */
+            }
+
+            .loading span {
+                font-size: 1em; /* Adjust loading text font size */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p class="description">Entrez les températures mensuelles des 12 derniers mois pour prédire la température du mois suivant. Cet outil utilise des modèles de prédiction avancés pour vous fournir une estimation fiable.</p>
+
+        <form id="prediction-form">
+
+            <!-- Entrée des températures pour chaque mois -->
+            <div id="months-input" class="month-inputs">
+                <div class="month-input">
+                    <label class="month-label" for="month-1">Mois 1</label>
+                    <input type="number" id="month-1" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-2">Mois 2</label>
+                    <input type="number" id="month-2" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-3">Mois 3</label>
+                    <input type="number" id="month-3" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-4">Mois 4</label>
+                    <input type="number" id="month-4" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-5">Mois 5</label>
+                    <input type="number" id="month-5" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-6">Mois 6</label>
+                    <input type="number" id="month-6" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-7">Mois 7</label>
+                    <input type="number" id="month-7" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-8">Mois 8</label>
+                    <input type="number" id="month-8" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-9">Mois 9</label>
+                    <input type="number" id="month-9" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-10">Mois 10</label>
+                    <input type="number" id="month-10" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-11">Mois 11</label>
+                    <input type="number" id="month-11" name="values" required step="any">
+                </div>
+                <div class="month-input">
+                    <label class="month-label" for="month-12">Mois 12</label>
+                    <input type="number" id="month-12" name="values" required step="any">
+                </div>
+            </div>
+
+            <button type="submit">Prédire</button>
+        </form>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="circle"></div>
+            <span>Chargement... Veuillez patienter.</span>
+        </div>
+
+        <div id="result" class="result"></div>
+        <div id="error" class="error" style="display: none;">Veuillez entrer des valeurs valides pour tous les mois.</div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').onsubmit = async function(event) {
+            event.preventDefault();
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            const values = [];
+            for (let i = 1; i <= 12; i++) {
+                const temp = parseFloat(document.getElementById(`month-${i}`).value);
+                if (isNaN(temp)) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                    return;
+                }
+                values.push(temp);
+            }
+
+            const formData = new FormData();
+            formData.append('values', values.join(','));
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('result').innerText = `Température prédite pour le Mois suivant est ${result.predicted_temperature.toFixed(2)} °C`;
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+            }
+        };
+    </script>
+</body>
+</html>
