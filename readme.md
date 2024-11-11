@@ -15,10 +15,10 @@ Avant de commencer, assurez-vous d'avoir installé :
 1. Ouvrez un terminal ou une invite de commande.
 2. Clonez le projet avec la commande suivante :
    ```bash
-   git clone https://github.com/alpha970/ml_projet.git
+   git clone https://github.com/alpha970/mlprojet.git
 3. Accédez au répertoire du projet :
    ```bash
-   cd ml_projet
+   cd mlprojet
 
 
 
