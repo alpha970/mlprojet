@@ -1,6 +1,6 @@
 # ML Projet
 
-Ce projet est un exemple d'application de Machine Learning.
+Ce projet est un exemple d'application de Deep Learning pour la prédiction de temperature.
 
 ## Prérequis
 
